@@ -2,56 +2,56 @@
 require 'spec_helper'
 
 describe "Exchange::ErrorSafe" do
-  let(:is_mri_21_or_greater) { ((RUBY_VERSION =~ /\A2.1/ || RUBY_VERSION =~ /\A2.2/) && RUBY_ENGINE == 'ruby') }
-  let(:time) { Time.gm(2012,8,27) }
+  let(:is_mri_21) { (RUBY_VERSION == '2.1.0' && RUBY_ENGINE == 'ruby') }
   before(:all) do
     Exchange.configuration = Exchange::Configuration.new { |c| c.cache = { :subclass => :no_cache } }
   end
   before(:each) do
-    allow(Time).to receive(:now).and_return time
+    @time = Time.gm(2012,8,27)
+    Time.stub :now => @time
   end
   after(:all) do
     Exchange.configuration.reset
   end
-
+  
   describe "money safe calculation" do
     describe "*" do
       it "should calculate correctly with exchange money" do
-        expect((0.29 * 50.in(:usd)).round).to eq(15)
+        (0.29 * 50.in(:usd)).round.should == 15
       end
       it "should not touch other operations" do
-        expect((0.29 * 50).round).to eq(14)
+        (0.29 * 50).round.should == 14
       end
     end
     describe "/" do
       it "should calculate correctly with exchange money" do
-        expect((((1829.82 / 12.in(:usd)) * 100).round.to_f / 100).to_f).to eq(152.49)
+        (((1829.82 / 12.in(:usd)) * 100).round.to_f / 100).to_f.should == 152.49
       end
       it "should not touch other operations" do
-        expect(((1829.82 / 12) * 100).round.to_f / 100).to eq(152.48)
+        (((1829.82 / 12) * 100).round.to_f / 100).should == 152.48
       end
     end
     describe "+" do
       it "should calculate correctly with exchange money" do
-        expect((1.0e+25 + BigDecimal.new("9999999999999999900000000").in(:usd)).round.to_f).to eq(2.0e+25)
+        (1.0e+25 + BigDecimal("9999999999999999900000000").in(:usd)).round.to_f.should == 2.0e+25
       end
       it "should not touch other operations" do
-        if is_mri_21_or_greater
-          expect((1.0e+25 + BigDecimal.new("9999999999999999900000000")).round).to eq(BigDecimal.new("0.199999999999999999E26"))
+        if is_mri_21
+          (1.0e+25 + BigDecimal("9999999999999999900000000")).round.should == BigDecimal("0.199999999999999999E26")
         else
-          expect((1.0e+25 + BigDecimal.new("9999999999999999900000000")).round).to eq(20000000000000001811939328)
+          (1.0e+25 + BigDecimal("9999999999999999900000000")).round.should == 20000000000000001811939328
         end
       end
     end
     describe "-" do
       it "should calculate correctly with exchange money" do
-        expect((1.0e+25 - BigDecimal.new("9999999999999999900000000").in(:usd)).round).to eq(100000000)
+        (1.0e+25 - BigDecimal("9999999999999999900000000").in(:usd)).round.should == 100000000
       end
       it "should not touch other operations" do
-        if is_mri_21_or_greater
-          expect(1.0e+25 - BigDecimal.new("9999999999999999900000000")).to eq(BigDecimal.new("0.1E9"))
+        if is_mri_21
+          (1.0e+25 - BigDecimal("9999999999999999900000000")).should == BigDecimal("0.1E9")
         else
-          expect(1.0e+25 - BigDecimal.new("9999999999999999900000000")).to eq(0)
+          (1.0e+25 - BigDecimal("9999999999999999900000000")).should == 0
         end
       end
     end

@@ -25,11 +25,11 @@ module Exchange
           self.class_eval <<-EOV
             def #{op} amount, currency, precision=nil, opts={}
               minor = definitions[currency][:minor_unit]
-              money = amount.is_a?(BigDecimal) ? amount : BigDecimal.new(amount.to_s, precision_for(amount, currency))
+              money = amount.is_a?(BigDecimal) ? amount : BigDecimal(amount.to_s, precision_for(amount, currency))
               if opts[:psych] && minor > 0
-                money.#{op}(0) - BigDecimal.new((1.0/(10**minor)).to_s)
+                money.#{op}(0) - BigDecimal((1.0/(10**minor)).to_s)
               elsif opts[:psych]
-                (((money.#{op}(0) / BigDecimal.new("10.0")).#{op}(0)) - BigDecimal.new("0.1")) * BigDecimal.new("10")
+                (((money.#{op}(0) / BigDecimal("10.0")).#{op}(0)) - BigDecimal("0.1")) * BigDecimal("10")
               else
                 money.#{op}(precision || minor)
               end
@@ -91,7 +91,7 @@ module Exchange
       if amount.is_a?(BigDecimal)
         amount
       else
-        BigDecimal.new(amount.to_s, precision_for(amount, currency))
+        BigDecimal(amount.to_s, precision_for(amount, currency))
       end
     end
     

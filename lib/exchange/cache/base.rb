@@ -106,6 +106,6 @@ module Exchange
     # @since 0.1
     # @version 0.1
     #
-    CachingWithoutBlockError = Class.new UsageError
+    CachingWithoutBlockError = Class.new ArgumentError
   end
 end

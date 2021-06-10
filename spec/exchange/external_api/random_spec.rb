@@ -19,13 +19,13 @@ describe "Exchange::ExternalAPI::OpenExchangeRates" do
     subject { Exchange::ExternalAPI::Random.new }
     it "should have usd as base currency" do
       subject.update
-      expect(subject.base).to eq(:usd)
+      subject.base.should == :usd
     end
     it "should set the timestamp from time.now" do
       time = Time.now
-      allow(Time).to receive(:now).and_return time
+      time.stub :now => time
       subject.update
-      expect(subject.timestamp).to eq(time.to_i)
+      subject.timestamp.should == time.to_i
     end
   end
   describe "rates" do
@@ -33,7 +33,7 @@ describe "Exchange::ExternalAPI::OpenExchangeRates" do
     it "should provide a rate for every ISO currency" do
       subject.update
       Exchange::ISO.currencies.each do |c|
-        expect(subject.rates[c]).not_to be_nil
+        subject.rates[c].should_not be_nil
       end
     end
   end

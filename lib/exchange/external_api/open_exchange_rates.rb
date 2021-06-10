@@ -43,7 +43,7 @@ module Exchange
         # @version 0.7
         #
         def extract_rates parsed
-          to_hash! parsed['rates'].keys.map{|k| k.downcase.to_sym }.zip(parsed['rates'].values.map{|v| BigDecimal.new(v.to_s) }).flatten
+          to_hash! parsed['rates'].keys.map{|k| k.downcase.to_sym }.zip(parsed['rates'].values.map{|v| BigDecimal(v.to_s) }).flatten
         end
       
         # A helper function to build an api url for either a specific time or the latest available rates

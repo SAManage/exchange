@@ -88,7 +88,7 @@ module Exchange
             map_to_currency_or_rate c
           }.compact.flatten
           
-          to_hash!([:eur, BigDecimal.new("1")] + rate_array)
+          to_hash!([:eur, BigDecimal("1")] + rate_array)
         end
         
         # a helper method to map a key value pair to either currency or rate
@@ -101,7 +101,7 @@ module Exchange
           unless (values = xml.attributes.values).empty?
             values.map { |v|
               val = v.value
-              val.match(/\d+/) ? BigDecimal.new(val) : val.downcase.to_sym
+              val.match(/\d+/) ? BigDecimal(val) : val.downcase.to_sym
             }.sort_by(&:to_s).reverse 
           end
         end

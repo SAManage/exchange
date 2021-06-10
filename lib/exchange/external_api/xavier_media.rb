@@ -74,7 +74,7 @@ module Exchange
         # @version 0.7
         #
         def extract_rates result
-          rates_array = result.css('fx currency_code').children.map{|c| c.to_s.downcase.to_sym }.zip(result.css('fx rate').children.map{|c| BigDecimal.new(c.to_s) }).flatten
+          rates_array = result.css('fx currency_code').children.map{|c| c.to_s.downcase.to_sym }.zip(result.css('fx rate').children.map{|c| BigDecimal(c.to_s) }).flatten
           to_hash!(rates_array)
         end
         

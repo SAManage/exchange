@@ -128,7 +128,7 @@ module Exchange
           self.class_eval <<-EOV
             def #{op}(other)
               test_for_currency_mix_error(other)
-              new_value = value #{op} (other.kind_of?(Money) ? other.to(self.currency, :at => other.time).value : BigDecimal.new(other.to_s))
+              new_value = value #{op} (other.kind_of?(Money) ? other.to(self.currency, :at => other.time).value : BigDecimal(other.to_s))
               Exchange::Money.new(new_value, currency, :at => time, :from => self)
             end
           EOV
@@ -405,6 +405,6 @@ module Exchange
   
   # The error that will get thrown when implicit conversions take place and are not allowed
   #
-  ImplicitConversionError = Class.new Error
+  ImplicitConversionError = Class.new StandardError
   
 end

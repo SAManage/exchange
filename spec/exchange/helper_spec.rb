@@ -6,25 +6,25 @@ describe "Exchange::Helper" do
   describe "assure_time" do
     before(:each) do
       time = Time.now
-      allow(Time).to receive(:now).and_return time
+      Time.stub :now => time
     end
     context "with a time object" do
       it "should return that time object" do
-        expect(Exchange::Helper.assure_time(Time.now - 3400)).to eq(Time.now - 3400)
+        Exchange::Helper.assure_time(Time.now - 3400).should == Time.now - 3400
       end
     end
     context "with a string" do
       it "should send to Time.gm" do
-        expect(Time).to receive(:gm).with('2011','09','09').once.and_return('TIME')
-        expect(Exchange::Helper.assure_time('2011-09-09')).to eq('TIME')
+        Time.should_receive(:gm).with('2011','09','09').once.and_return('TIME')
+        Exchange::Helper.assure_time('2011-09-09').should == 'TIME'
       end
     end
     context "with nil" do
       it "should return nil if no default is defined" do
-        expect(Exchange::Helper.assure_time(nil)).to be_nil
+        Exchange::Helper.assure_time(nil).should be_nil
       end
       it "should return the default if the default is defined" do
-        expect(Exchange::Helper.assure_time(nil, :default => :now)).to eq(Time.now)
+        Exchange::Helper.assure_time(nil, :default => :now).should == Time.now
       end
     end
   end
